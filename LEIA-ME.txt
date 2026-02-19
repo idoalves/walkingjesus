@@ -1,0 +1,14 @@
+
+INSTRUÇÕES DE INSTALAÇÃO
+------------------------
+
+1. NÃO ABRA O INDEX.HTML DIRETAMENTE NO SEU NAVEGADOR.
+   Arquivos modernos de site precisam de um servidor (como o Netlify) para carregar os componentes.
+
+2. COMO PUBLICAR:
+   - Vá para https://app.netlify.com/drop
+   - Arraste esta pasta INTEIRA (extraída do ZIP) para o site.
+   - O Netlify gerará um link onde o site funcionará perfeitamente.
+
+3. GITHUB:
+   - Faça upload de TODOS os arquivos extraídos para o seu repositório.

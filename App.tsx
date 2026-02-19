@@ -1,0 +1,1 @@
+// Migrated to index.tsx to support browser-side Babel transformation
