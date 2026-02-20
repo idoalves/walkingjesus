@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ data.settings["WALKING JESUS"].title }}</title>
+</head>
+<body>
+  <h1>{{ data.settings["WALKING JESUS"].tagline }}</h1>
+
+  <h2>Posts</h2>
+  <ul>
+    {% for post in data.posts %}
+      <li>
+        <a href="/posts/{{ post.id }}/">{{ post.title }}</a>
+        <small>{{ post.date }}</small>
+      </li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

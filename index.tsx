@@ -129,11 +129,11 @@ const App = () => {
                                         <span>{t.postInspiracao}</span>
                                     </div>
                                     <h3 className="text-3xl md:text-4xl font-bold text-stone-900 leading-snug hover:text-stone-600 transition cursor-pointer">
-                                        {post[`title_${lang}`] || post.title}
+                                        {lang === 'pt' ? (post.title_pt || post.title) : post.title}
                                     </h3>
                                     <div
                                         className="prose prose-stone lg:prose-lg text-stone-600 leading-relaxed first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-stone-900"
-                                        dangerouslySetInnerHTML={{ __html: post[`content_${lang}`] || post.content }}
+                                        dangerouslySetInnerHTML={{ __html: lang === 'pt' ? (post.content_pt || post.content) : post.content }}
                                     />
                                     <button className="pt-4 flex items-center gap-2 group text-stone-900 font-bold border-b-2 border-stone-900 pb-1 hover:text-stone-500 hover:border-stone-500 transition">
                                         {t.btnReadMore}
