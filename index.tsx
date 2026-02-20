@@ -84,7 +84,7 @@ const App = () => {
                         {settings.logoUrl && (
                             <img src={settings.logoUrl} alt="Logo" className="w-10 h-10 rounded-full object-cover shadow-sm" />
                         )}
-                        <h1 className="text-2xl font-bold tracking-tighter text-stone-900">{settings.title}</h1>
+                        <h1 className="text-2xl font-bold tracking-tighter text-stone-900">{lang === 'pt' ? (settings.title_pt || settings.title) : settings.title}</h1>
                     </div>
                     <div className="flex items-center gap-8">
                         <div className="flex gap-8 text-sm uppercase tracking-widest font-medium text-stone-500">
@@ -106,13 +106,13 @@ const App = () => {
             {/* Hero Header */}
             <header className="py-20 px-6 text-center max-w-4xl mx-auto">
                 <span className="inline-block px-3 py-1 bg-stone-100 text-stone-500 text-xs font-bold uppercase tracking-[0.2em] mb-6 rounded">
-                    {settings.tagline}
+                    {lang === 'pt' ? (settings.tagline_pt || settings.tagline) : settings.tagline}
                 </span>
                 <h2 className="text-5xl md:text-7xl font-bold text-stone-900 mb-8 leading-tight">
-                    {settings.heroText}
+                    {lang === 'pt' ? (settings.heroText_pt || settings.heroText) : settings.heroText}
                 </h2>
                 <p className="text-xl md:text-2xl text-stone-600 leading-relaxed italic border-l-4 border-stone-200 pl-6 py-2 max-w-2xl mx-auto text-left md:text-center md:border-l-0 md:pl-0">
-                    {settings.heroSubtext}
+                    {lang === 'pt' ? (settings.heroSubtext_pt || settings.heroSubtext) : settings.heroSubtext}
                 </p>
             </header>
 
@@ -182,7 +182,7 @@ const App = () => {
                     <a href="#" className="text-stone-400 hover:text-stone-900 transition">✉️</a>
                 </div>
                 <p className="text-stone-400 text-sm">
-                    © {new Date().getFullYear()} {settings.title}. {t.footerTagline}
+                    © {new Date().getFullYear()} {lang === 'pt' ? (settings.title_pt || settings.title) : settings.title}. {t.footerTagline}
                 </p>
             </footer>
         </div>
