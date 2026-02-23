@@ -1,5 +1,5 @@
-declare const React: any;
-declare const ReactDOM: any;
+import * as React from 'react';
+import * as ReactDOM from 'react-dom/client';
 
 const { useState, useEffect } = React;
 
