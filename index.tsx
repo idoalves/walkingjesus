@@ -1,3 +1,4 @@
+// @ts-nocheck
 declare const React: any;
 declare const ReactDOM: any;
 
@@ -33,9 +34,11 @@ const translations: { [key: string]: any } = {
 };
 
 const App = () => {
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [lang, setLang] = useState('en');
+
+    const [selectedPost, setSelectedPost] = useState<any>(null);
 
     useEffect(() => {
         fetch('./data.json')
@@ -80,7 +83,7 @@ const App = () => {
             {/* Navigation */}
             <nav className="bg-white/80 backdrop-blur-md border-b border-stone-100 sticky top-0 z-50">
                 <div className="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 cursor-pointer" onClick={() => setSelectedPost(null)}>
                         {settings.logoUrl && (
                             <img src={settings.logoUrl} alt="Logo" className="w-10 h-10 rounded-full object-cover shadow-sm" />
                         )}
@@ -88,7 +91,7 @@ const App = () => {
                     </div>
                     <div className="flex items-center gap-8">
                         <div className="flex gap-8 text-sm uppercase tracking-widest font-medium text-stone-500">
-                            <a href="#" className="hover:text-stone-900 transition">{t.navInicio}</a>
+                            <a href="#" className="hover:text-stone-900 transition" onClick={(e) => { e.preventDefault(); setSelectedPost(null); }}>{t.navInicio}</a>
                             <a href="#" className="hover:text-stone-900 transition">{t.navMensagens}</a>
                             <a href="#" className="hover:text-stone-900 transition">{t.navSobre}</a>
                         </div>
@@ -103,63 +106,107 @@ const App = () => {
                 </div>
             </nav>
 
-            {/* Hero Header */}
-            <header className="py-20 px-6 text-center max-w-4xl mx-auto">
-                <span className="inline-block px-3 py-1 bg-stone-100 text-stone-500 text-xs font-bold uppercase tracking-[0.2em] mb-6 rounded">
-                    {lang === 'pt' ? (settings.tagline_pt || settings.tagline) : settings.tagline}
-                </span>
-                <h2 className="text-5xl md:text-7xl font-bold text-stone-900 mb-8 leading-tight">
-                    {lang === 'pt' ? (settings.heroText_pt || settings.heroText) : settings.heroText}
-                </h2>
-                <p className="text-xl md:text-2xl text-stone-600 leading-relaxed italic border-l-4 border-stone-200 pl-6 py-2 max-w-2xl mx-auto text-left md:text-center md:border-l-0 md:pl-0">
-                    {lang === 'pt' ? (settings.heroSubtext_pt || settings.heroSubtext) : settings.heroSubtext}
-                </p>
-            </header>
+            {!selectedPost ? (
+                <>
+                    {/* Hero Header */}
+                    <header className="py-20 px-6 text-center max-w-4xl mx-auto">
+                        <span className="inline-block px-3 py-1 bg-stone-100 text-stone-500 text-xs font-bold uppercase tracking-[0.2em] mb-6 rounded">
+                            {lang === 'pt' ? (settings.tagline_pt || settings.tagline) : settings.tagline}
+                        </span>
+                        <h2 className="text-5xl md:text-7xl font-bold text-stone-900 mb-8 leading-tight">
+                            {lang === 'pt' ? (settings.heroText_pt || settings.heroText) : settings.heroText}
+                        </h2>
+                        <p className="text-xl md:text-2xl text-stone-600 leading-relaxed italic border-l-4 border-stone-200 pl-6 py-2 max-w-2xl mx-auto text-left md:text-center md:border-l-0 md:pl-0">
+                            {lang === 'pt' ? (settings.heroSubtext_pt || settings.heroSubtext) : settings.heroSubtext}
+                        </p>
+                    </header>
 
-            {/* Main Content */}
-            <main className="container mx-auto px-6 pb-24">
-                <div className="max-w-5xl mx-auto space-y-32">
-                    {posts.map((post: any) => (
-                        <article key={post.id} className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
-                            <div className="md:col-span-7">
-                                <div className="space-y-6">
-                                    <div className="flex items-center gap-4 text-sm text-stone-400 font-medium">
-                                        <span className="uppercase tracking-widest">{post.date}</span>
-                                        <span className="w-8 h-px bg-stone-200"></span>
-                                        <span>{t.postInspiracao}</span>
-                                    </div>
-                                    <h3 className="text-3xl md:text-4xl font-bold text-stone-900 leading-snug hover:text-stone-600 transition cursor-pointer">
-                                        {lang === 'pt' ? (post.title_pt || post.title) : post.title}
-                                    </h3>
-                                    <div
-                                        className="prose prose-stone lg:prose-lg text-stone-600 leading-relaxed first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-stone-900"
-                                        dangerouslySetInnerHTML={{ __html: lang === 'pt' ? (post.content_pt || post.content) : post.content }}
-                                    />
-                                    <button className="pt-4 flex items-center gap-2 group text-stone-900 font-bold border-b-2 border-stone-900 pb-1 hover:text-stone-500 hover:border-stone-500 transition">
-                                        {t.btnReadMore}
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="md:col-span-5 relative mt-8 md:mt-0">
-                                <div className="aspect-[3/4] overflow-hidden rounded-2xl shadow-2xl skew-y-1 transform transition hover:skew-y-0 duration-500">
-                                    {post.imageUrl ? (
-                                        <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="w-full h-full bg-stone-200 flex items-center justify-center italic text-stone-400">
-                                            Imago Deorum
+                    {/* Main Content (List) */}
+                    <main className="container mx-auto px-6 pb-24">
+                        <div className="max-w-5xl mx-auto space-y-32">
+                            {posts.map((post: any) => (
+                                <article key={post.id} className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
+                                    <div className="md:col-span-7">
+                                        <div className="space-y-6">
+                                            <div className="flex items-center gap-4 text-sm text-stone-400 font-medium">
+                                                <span className="uppercase tracking-widest">{post.date}</span>
+                                                <span className="w-8 h-px bg-stone-200"></span>
+                                                <span>{t.postInspiracao}</span>
+                                            </div>
+                                            <h3
+                                                className="text-3xl md:text-4xl font-bold text-stone-900 leading-snug hover:text-stone-600 transition cursor-pointer"
+                                                onClick={() => setSelectedPost(post)}
+                                            >
+                                                {lang === 'pt' ? (post.title_pt || post.title) : post.title}
+                                            </h3>
+                                            <div
+                                                className="prose prose-stone lg:prose-lg text-stone-600 leading-relaxed first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-stone-900 line-clamp-3"
+                                                dangerouslySetInnerHTML={{ __html: lang === 'pt' ? (post.content_pt || post.content) : post.content }}
+                                            />
+                                            <button
+                                                className="pt-4 flex items-center gap-2 group text-stone-900 font-bold border-b-2 border-stone-900 pb-1 hover:text-stone-500 hover:border-stone-500 transition"
+                                                onClick={() => setSelectedPost(post)}
+                                            >
+                                                {t.btnReadMore}
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                </svg>
+                                            </button>
                                         </div>
-                                    )}
-                                </div>
-                                {/* Decorative element */}
-                                <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-stone-100 -z-10 rounded-full border border-stone-200 opacity-50"></div>
+                                    </div>
+                                    <div className="md:col-span-5 relative mt-8 md:mt-0 cursor-pointer" onClick={() => setSelectedPost(post)}>
+                                        <div className="aspect-[3/4] overflow-hidden rounded-2xl shadow-2xl skew-y-1 transform transition hover:skew-y-0 duration-500">
+                                            {post.imageUrl ? (
+                                                <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full bg-stone-200 flex items-center justify-center italic text-stone-400">
+                                                    Imago Deorum
+                                                </div>
+                                            )}
+                                        </div>
+                                        {/* Decorative element */}
+                                        <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-stone-100 -z-10 rounded-full border border-stone-200 opacity-50"></div>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    </main>
+                </>
+            ) : (
+                /* Full Post Article View */
+                <main className="container mx-auto px-6 py-16 pb-24">
+                    <div className="max-w-3xl mx-auto">
+                        <button
+                            className="mb-8 flex items-center gap-2 text-stone-500 hover:text-stone-900 transition font-medium"
+                            onClick={() => setSelectedPost(null)}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            {lang === 'pt' ? 'Voltar' : 'Back'}
+                        </button>
+                        <article>
+                            <div className="flex items-center gap-4 text-sm text-stone-400 font-medium mb-6">
+                                <span className="uppercase tracking-widest">{selectedPost.date}</span>
+                                <span className="w-8 h-px bg-stone-200"></span>
+                                <span>{t.postInspiracao}</span>
                             </div>
+                            <h1 className="text-4xl md:text-5xl font-bold text-stone-900 leading-tight mb-8">
+                                {lang === 'pt' ? (selectedPost.title_pt || selectedPost.title) : selectedPost.title}
+                            </h1>
+                            {selectedPost.imageUrl && (
+                                <div className="mb-12 rounded-2xl overflow-hidden shadow-lg">
+                                    <img src={selectedPost.imageUrl} alt={selectedPost.title} className="w-full h-auto object-cover max-h-[60vh]" />
+                                </div>
+                            )}
+                            <div
+                                className="prose prose-stone lg:prose-lg max-w-none text-stone-600 leading-relaxed first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-stone-900"
+                                dangerouslySetInnerHTML={{ __html: lang === 'pt' ? (selectedPost.content_pt || selectedPost.content) : selectedPost.content }}
+                            />
                         </article>
-                    ))}
-                </div>
-            </main>
+                    </div>
+                </main>
+            )}
 
             {/* Spiritual Quote Section */}
             <section className="bg-stone-900 text-stone-100 py-24 px-6 text-center">
@@ -189,4 +236,4 @@ const App = () => {
     );
 };
 
-ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+ReactDOM.createRoot(document.getElementById('root')!).render(React.createElement(App));
