@@ -46,12 +46,32 @@ const App = () => {
             .then((jsonData) => {
                 setData(jsonData);
                 setLoading(false);
+
+                // Check for deep link
+                const urlParams = new URLSearchParams(window.location.search);
+                const postId = urlParams.get('id');
+                if (postId && jsonData.posts) {
+                    const post = jsonData.posts.find((p: any) => String(p.id) === postId);
+                    if (post) setSelectedPost(post);
+                }
             })
             .catch((error) => {
                 console.error('Erro ao carregar data.json:', error);
                 setLoading(false);
             });
     }, []);
+
+    const handleSelectPost = (post: any) => {
+        setSelectedPost(post);
+        if (post) {
+            window.history.pushState({}, '', `?id=${post.id}`);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            // Clear URL
+            const newUrl = window.location.pathname;
+            window.history.pushState({}, '', newUrl);
+        }
+    };
 
     const t = translations[lang];
 
@@ -83,7 +103,7 @@ const App = () => {
             {/* Navigation */}
             <nav className="bg-white/80 backdrop-blur-md border-b border-stone-100 sticky top-0 z-50">
                 <div className="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div className="flex items-center gap-3 cursor-pointer" onClick={() => setSelectedPost(null)}>
+                    <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleSelectPost(null)}>
                         {settings.logoUrl && (
                             <img src={settings.logoUrl} alt="Logo" className="w-10 h-10 rounded-full object-cover shadow-sm" />
                         )}
@@ -91,7 +111,7 @@ const App = () => {
                     </div>
                     <div className="flex items-center gap-8">
                         <div className="flex gap-8 text-sm uppercase tracking-widest font-medium text-stone-500">
-                            <a href="#" className="hover:text-stone-900 transition" onClick={(e) => { e.preventDefault(); setSelectedPost(null); }}>{t.navInicio}</a>
+                            <a href="#" className="hover:text-stone-900 transition" onClick={(e) => { e.preventDefault(); handleSelectPost(null); }}>{t.navInicio}</a>
                             <a href="#" className="hover:text-stone-900 transition">{t.navMensagens}</a>
                             <a href="#" className="hover:text-stone-900 transition">{t.navSobre}</a>
                         </div>
@@ -135,7 +155,7 @@ const App = () => {
                                             </div>
                                             <h3
                                                 className="text-3xl md:text-4xl font-bold text-stone-900 leading-snug hover:text-stone-600 transition cursor-pointer"
-                                                onClick={() => setSelectedPost(post)}
+                                                onClick={() => handleSelectPost(post)}
                                             >
                                                 {lang === 'pt' ? (post.title_pt || post.title) : post.title}
                                             </h3>
@@ -145,7 +165,7 @@ const App = () => {
                                             />
                                             <button
                                                 className="pt-4 flex items-center gap-2 group text-stone-900 font-bold border-b-2 border-stone-900 pb-1 hover:text-stone-500 hover:border-stone-500 transition"
-                                                onClick={() => setSelectedPost(post)}
+                                                onClick={() => handleSelectPost(post)}
                                             >
                                                 {t.btnReadMore}
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -154,7 +174,7 @@ const App = () => {
                                             </button>
                                         </div>
                                     </div>
-                                    <div className="md:col-span-5 relative mt-8 md:mt-0 cursor-pointer" onClick={() => setSelectedPost(post)}>
+                                    <div className="md:col-span-5 relative mt-8 md:mt-0 cursor-pointer" onClick={() => handleSelectPost(post)}>
                                         <div className="aspect-[3/4] overflow-hidden rounded-2xl shadow-2xl skew-y-1 transform transition hover:skew-y-0 duration-500">
                                             {post.imageUrl ? (
                                                 <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover" />
@@ -178,7 +198,7 @@ const App = () => {
                     <div className="max-w-3xl mx-auto">
                         <button
                             className="mb-8 flex items-center gap-2 text-stone-500 hover:text-stone-900 transition font-medium"
-                            onClick={() => setSelectedPost(null)}
+                            onClick={() => handleSelectPost(null)}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
